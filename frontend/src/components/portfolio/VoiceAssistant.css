@@ -1,0 +1,116 @@
+/* ChatGPT Voice Mode Assistant Styling */
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+@keyframes wave-height {
+  0%, 100% {
+    height: 8px;
+  }
+  50% {
+    height: 48px;
+  }
+}
+
+.voice-orb {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--orb-bg-1) 0%, var(--orb-bg-2) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px var(--orb-shadow-color);
+  transition: all 0.3s ease;
+}
+
+.voice-orb.listening {
+  background: radial-gradient(circle, var(--orb-listening-bg-1) 0%, var(--orb-listening-bg-2) 100%);
+  box-shadow: 0 0 45px var(--orb-listening-shadow);
+}
+
+.voice-orb.speaking {
+  background: radial-gradient(circle, var(--orb-speaking-bg-1) 0%, var(--orb-speaking-bg-2) 100%);
+  box-shadow: 0 0 45px var(--orb-speaking-shadow);
+}
+
+.voice-ring {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 2px solid var(--ring-color-1);
+  animation: pulse-ring 2s infinite ease-in-out;
+}
+
+.voice-ring.listening {
+  border-color: var(--ring-color-1);
+}
+
+.voice-ring.speaking {
+  border-color: var(--ring-color-2);
+}
+
+.voice-ring-2 {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border-radius: 50%;
+  border: 1px dashed var(--ring-color-2);
+  animation: pulse-ring 3s infinite linear;
+}
+
+.voice-ring-2.listening {
+  border-color: var(--ring-color-2);
+}
+
+.voice-ring-2.speaking {
+  border-color: var(--ring-color-2);
+}
+
+.voice-bar-anim {
+  width: 4px;
+  background-color: #00B4FF;
+  border-radius: 9999px;
+  animation: wave-height 0.8s ease-in-out infinite;
+}
+
+.voice-bar-anim.listening {
+  background-color: #00B4FF;
+}
+
+.voice-bar-anim.speaking {
+  background-color: #0FF0FC;
+}
+
+/* Custom scrollbars for chat panels */
+.chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 9999px;
+}
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}

@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+instance/
+*.db
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Editor / System
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.zip
+temp_certs/
+RoamingTechStack.jsx
+jessykerala.jpeg
