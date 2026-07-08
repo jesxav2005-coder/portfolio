@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import PortfolioHome from './pages/portfolio/PortfolioHome';
@@ -15,27 +15,23 @@ import Analytics from './pages/admin/Analytics';
 import Settings from './pages/admin/Settings';
 import Experiences from './pages/admin/Experiences';
 import VoiceAssistant from './components/portfolio/VoiceAssistant';
-import SplashCursor from './utils/splashCursor';
+import SplashCursor from './components/SplashCursor';
 
 function App() {
-  useEffect(() => {
-    const splashCursor = new SplashCursor({
-      particleCount: 8,
-      particleSize: 6,
-      duration: 800,
-      velocity: 2.5,
-      gravity: 0.12,
-      colors: ['#B300FF', '#A100F2', '#00BFFF'],
-      colorClasses: ['violet', 'neon-purple', 'cyan']
-    });
-
-    splashCursor.init();
-
-    return () => splashCursor.destroy();
-  }, []);
-
   return (
     <Router>
+      <SplashCursor
+        DENSITY_DISSIPATION={3.5}
+        VELOCITY_DISSIPATION={2}
+        PRESSURE={0.1}
+        CURL={3}
+        SPLAT_RADIUS={0.2}
+        SPLAT_FORCE={6000}
+        COLOR_UPDATE_SPEED={10}
+        SHADING={true}
+        RAINBOW_MODE={false}
+        COLOR="#A855F7"
+      />
       <Toaster 
         position="top-right" 
         toastOptions={{
