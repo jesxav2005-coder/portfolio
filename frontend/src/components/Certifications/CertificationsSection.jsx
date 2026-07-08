@@ -52,7 +52,7 @@ export const CertificationsSection = () => {
         </div>
 
         {/* 3D Curved WebGL Gallery Viewport */}
-        <div className="gallery-wrapper relative h-[450px] sm:h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 bg-slate-900/10 dark:bg-slate-950/20">
+        <div className="gallery-wrapper relative h-[480px] sm:h-[680px] rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 bg-slate-900/10 dark:bg-slate-950/20">
           <CircularGallery
             items={galleryItems}
             bend={2.5}
@@ -60,7 +60,7 @@ export const CertificationsSection = () => {
             borderRadius={0.06}
             font="bold 24px Figtree"
             scrollSpeed={2}
-            scrollEase={0.05}
+            scrollEase={0.08}
             onChangeActiveIndex={setActiveIndex}
             onInit={(app) => { appRef.current = app; }}
           />
