@@ -16,12 +16,18 @@ def create_app(config_name=None):
     
     # Configure CORS - supports credentials for refresh token cookies
     frontend_url = app.config.get("FRONTEND_URL", "http://localhost:5173")
-    cors.init_app(app, resources={r"/api/*": {
-        "origins": [frontend_url],
-        "supports_credentials": True,
-        "allow_headers": ["Content-Type", "Authorization"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-    }})
+    cors.init_app(app, resources={
+        r"/api/*": {
+            "origins": [frontend_url],
+            "supports_credentials": True,
+            "allow_headers": ["Content-Type", "Authorization"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        },
+        r"/uploads/*": {
+            "origins": [frontend_url],
+            "methods": ["GET", "OPTIONS"]
+        }
+    })
     
     mail.init_app(app)
     limiter.init_app(app)

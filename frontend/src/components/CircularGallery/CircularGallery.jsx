@@ -82,10 +82,10 @@ async function resolveFont(font, fontUrl) {
   if (!effectiveUrl) {
     if (document.fonts && document.fonts.load) {
       try {
-        await document.fonts.load(font);
-        await document.fonts.ready;
+        // Just trigger load without awaiting all page fonts to avoid hanging on slow assets
+        document.fonts.load(font);
       } catch {
-        // Ignore – fall back to whatever the browser provides.
+        // Ignore
       }
     }
     return font;
@@ -95,13 +95,6 @@ async function resolveFont(font, fontUrl) {
     const sizeMatch = font.match(/^\s*(.*?\d+px)/);
     const prefix = sizeMatch ? sizeMatch[1].trim() : 'bold 30px';
     const resolved = `${prefix} "${family}"`;
-    if (document.fonts && document.fonts.load) {
-      try {
-        await document.fonts.load(resolved);
-      } catch {
-        // Ignore – we still attempt to render with the requested font.
-      }
-    }
     return resolved;
   } catch (error) {
     console.error('CircularGallery: unable to load font from', fontUrl, error);
@@ -289,11 +282,17 @@ class Media {
       transparent: true
     });
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    // Only request CORS if it's an external url and not on our own domain
+    if (this.image && typeof this.image === 'string' && this.image.startsWith('http') && !this.image.includes(window.location.host)) {
+      img.crossOrigin = 'anonymous';
+    }
     img.src = this.image;
     img.onload = () => {
       texture.image = img;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+    };
+    img.onerror = (e) => {
+      console.error('CircularGallery: Failed to load image texture:', this.image, e);
     };
   }
   createMesh() {
@@ -514,8 +513,8 @@ class App {
   }
   onResize() {
     this.screen = {
-      width: this.container.clientWidth,
-      height: this.container.clientHeight
+      width: this.container.clientWidth || 1,
+      height: this.container.clientHeight || 1
     };
     this.renderer.setSize(this.screen.width, this.screen.height);
     this.camera.perspective({
@@ -556,6 +555,14 @@ class App {
     this.boundOnTouchUp = this.onTouchUp.bind(this);
     this.boundOnKeyDown = this.onKeyDown.bind(this);
 
+    // Use ResizeObserver to detect parent container size adjustments, ensuring we never start with clientWidth/Height of 0
+    this.resizeObserver = new ResizeObserver(() => {
+      this.onResize();
+    });
+    if (this.container) {
+      this.resizeObserver.observe(this.container);
+    }
+
     window.addEventListener('resize', this.boundOnResize);
     window.addEventListener('mousewheel', this.boundOnWheel, { passive: true });
     window.addEventListener('wheel', this.boundOnWheel, { passive: true });
@@ -570,6 +577,11 @@ class App {
   }
   destroy() {
     window.cancelAnimationFrame(this.raf);
+    
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+
     window.removeEventListener('resize', this.boundOnResize);
     window.removeEventListener('mousewheel', this.boundOnWheel);
     window.removeEventListener('wheel', this.boundOnWheel);
