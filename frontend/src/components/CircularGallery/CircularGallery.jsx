@@ -614,6 +614,19 @@ export default function CircularGallery({
   onInit
 }) {
   const containerRef = useRef(null);
+  
+  // Keep refs of callback props to avoid resetting the WebGL instance when they change reference
+  const onChangeActiveIndexRef = useRef(onChangeActiveIndex);
+  const onInitRef = useRef(onInit);
+
+  useEffect(() => {
+    onChangeActiveIndexRef.current = onChangeActiveIndex;
+  }, [onChangeActiveIndex]);
+
+  useEffect(() => {
+    onInitRef.current = onInit;
+  }, [onInit]);
+
   useEffect(() => {
     if (!containerRef.current) return;
     let app;
@@ -628,10 +641,14 @@ export default function CircularGallery({
         font: resolvedFont,
         scrollSpeed,
         scrollEase,
-        onChangeActiveIndex
+        onChangeActiveIndex: (index) => {
+          if (onChangeActiveIndexRef.current) {
+            onChangeActiveIndexRef.current(index);
+          }
+        }
       });
-      if (onInit) {
-        onInit(app);
+      if (onInitRef.current) {
+        onInitRef.current(app);
       }
     });
 
@@ -639,7 +656,7 @@ export default function CircularGallery({
       isMounted = false;
       if (app) app.destroy();
     };
-  }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase, onChangeActiveIndex, onInit]);
+  }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase]);
   return (
     <div
       className="circular-gallery"

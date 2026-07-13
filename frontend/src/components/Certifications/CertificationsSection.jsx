@@ -3,6 +3,12 @@ import CircularGallery from '../CircularGallery/CircularGallery';
 import { certificatesData } from './certificatesData';
 import './CertificationsSection.css';
 
+// Map data to CircularGallery items structure (declared statically outside the component to prevent recreating references on re-renders)
+const galleryItems = certificatesData.map(cert => ({
+  image: cert.image,
+  text: cert.name
+}));
+
 export const CertificationsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const appRef = useRef(null);
@@ -11,12 +17,6 @@ export const CertificationsSection = () => {
 
   const totalCerts = certificatesData.length;
   const activeCert = certificatesData[activeIndex];
-
-  // Map data to CircularGallery items structure
-  const galleryItems = certificatesData.map(cert => ({
-    image: cert.image,
-    text: cert.name
-  }));
 
   // Center active badge chip in scroll container
   useEffect(() => {
