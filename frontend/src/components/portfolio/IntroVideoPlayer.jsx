@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
-import introVideo from '../../assets/intro-video.mp4';
+
+const introVideo = '/intro-video.mp4';
 
 export const IntroVideoPlayer = () => {
   const videoRef = useRef(null);
@@ -144,11 +145,15 @@ export const IntroVideoPlayer = () => {
         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
         playsInline
         autoPlay
+        preload="auto"
         muted={isMuted}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleVideoEnded}
         onClick={togglePlay}
+        onError={(e) => {
+          console.error("Video player error:", e.target?.error);
+        }}
       />
 
       {/* 2. HUD Corner Brackets (floating 25px in Z-space) */}
