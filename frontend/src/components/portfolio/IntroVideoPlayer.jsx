@@ -17,20 +17,13 @@ export const IntroVideoPlayer = () => {
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
-      // Try playing with sound first
-      video.muted = false;
-      setIsMuted(false);
+      // Always initialize muted to comply with browser autoplay requirements
+      video.muted = true;
+      setIsMuted(true);
       video.play()
         .then(() => setIsPlaying(true))
         .catch(err => {
-          console.log("Autoplay with sound prevented, falling back to muted autoplay", err);
-          video.muted = true;
-          setIsMuted(true);
-          video.play()
-            .then(() => setIsPlaying(true))
-            .catch(playErr => {
-              console.log("Muted autoplay also prevented", playErr);
-            });
+          console.log("Muted autoplay failed/prevented", err);
         });
     }
   }, []);

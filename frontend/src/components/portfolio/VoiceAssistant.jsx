@@ -290,48 +290,66 @@ export const VoiceAssistant = () => {
 
   const hasTriggeredRef = useRef(false);
 
-  // Trigger Voice Welcome and Open Panel on open-ai-voice scroll event
+  // Trigger welcome speech and start listening loop when the chatbot is opened
   useEffect(() => {
-    const handleOpenAndGreet = () => {
-      if (hasTriggeredRef.current) return;
-      hasTriggeredRef.current = true;
+    if (!isOpen) {
+      // If closed, make sure we stop listening and speaking
+      shouldListenRef.current = false;
+      stopRecognition();
+      stopSpeech();
+      setIsListening(false);
+      setIsSpeaking(false);
+      return;
+    }
 
-      // Open widget panel automatically
-      setIsOpen(true);
-
-      if (sessionStorage.getItem('has_heard_voice_welcome') !== 'true') {
-        sessionStorage.setItem('has_heard_voice_welcome', 'true');
-        
-        const welcomeText = "Hello, welcome to Jeshintha's portfolio. I am Jeshintha's AI assistant. Feel free to ask me about Jeshintha's skills, projects, internships, experience, education, and achievements.";
-        speak(
-          welcomeText,
-          () => setIsSpeaking(true),
-          () => {
-            setIsSpeaking(false);
-            startListeningLoop();
-          },
-          (err) => {
-            console.warn("Autoplay speech block or failure:", err);
-            setIsSpeaking(false);
-            startListeningLoop();
-          },
-          voices
-        );
-      } else {
-        // Welcome already heard, start listening directly
+    // Chatbot is open! Check if we should play the welcome greeting
+    if (hasTriggeredRef.current) {
+      // Welcome already played previously, just make sure we start listening
+      if (!isListening) {
         startListeningLoop();
       }
+      return;
+    }
+
+    // Set trigger flag so we only play welcome greeting once
+    hasTriggeredRef.current = true;
+
+    if (sessionStorage.getItem('has_heard_voice_welcome') !== 'true') {
+      sessionStorage.setItem('has_heard_voice_welcome', 'true');
+      
+      const welcomeText = "Hello, welcome to Jeshintha's portfolio. I am Jeshintha's AI assistant. Feel free to ask me about Jeshintha's skills, projects, internships, experience, education, and achievements.";
+      speak(
+        welcomeText,
+        () => setIsSpeaking(true),
+        () => {
+          setIsSpeaking(false);
+          startListeningLoop();
+        },
+        (err) => {
+          console.warn("Autoplay speech block or failure:", err);
+          setIsSpeaking(false);
+          startListeningLoop();
+        },
+        voices
+      );
+    } else {
+      // Welcome already heard, start listening directly
+      startListeningLoop();
+    }
+  }, [isOpen, voices]);
+
+  // Listen to the custom event from the video ending to automatically pop open the panel
+  useEffect(() => {
+    const handleOpenAndGreet = () => {
+      setIsOpen(true);
     };
 
     window.addEventListener('open-ai-voice', handleOpenAndGreet);
 
     return () => {
       window.removeEventListener('open-ai-voice', handleOpenAndGreet);
-      shouldListenRef.current = false;
-      stopRecognition();
-      stopSpeech();
     };
-  }, [voices]);
+  }, []);
 
   // Dispatch event to mute the video player when chatbot is opened
   useEffect(() => {
