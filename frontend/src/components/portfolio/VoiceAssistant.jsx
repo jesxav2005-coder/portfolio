@@ -314,28 +314,21 @@ export const VoiceAssistant = () => {
     // Set trigger flag so we only play welcome greeting once
     hasTriggeredRef.current = true;
 
-    if (sessionStorage.getItem('has_heard_voice_welcome') !== 'true') {
-      sessionStorage.setItem('has_heard_voice_welcome', 'true');
-      
-      const welcomeText = "Hello, welcome to Jeshintha's portfolio. I am Jeshintha's AI assistant. Feel free to ask me about Jeshintha's skills, projects, internships, experience, education, and achievements.";
-      speak(
-        welcomeText,
-        () => setIsSpeaking(true),
-        () => {
-          setIsSpeaking(false);
-          startListeningLoop();
-        },
-        (err) => {
-          console.warn("Autoplay speech block or failure:", err);
-          setIsSpeaking(false);
-          startListeningLoop();
-        },
-        voices
-      );
-    } else {
-      // Welcome already heard, start listening directly
-      startListeningLoop();
-    }
+    const welcomeText = "Hello, welcome to Jeshintha's portfolio. I am Jeshintha's AI assistant. Feel free to ask me about Jeshintha's skills, projects, internships, experience, education, and achievements.";
+    speak(
+      welcomeText,
+      () => setIsSpeaking(true),
+      () => {
+        setIsSpeaking(false);
+        startListeningLoop();
+      },
+      (err) => {
+        console.warn("Autoplay speech block or failure:", err);
+        setIsSpeaking(false);
+        startListeningLoop();
+      },
+      voices
+    );
   }, [isOpen, voices]);
 
   // Listen to the custom event from the video ending to automatically pop open the panel
