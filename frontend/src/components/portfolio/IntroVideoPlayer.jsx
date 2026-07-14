@@ -45,6 +45,17 @@ export const IntroVideoPlayer = () => {
     return () => window.removeEventListener('mute-video', handleMuteVideo);
   }, []);
 
+  const handleStartWithAudio = (e) => {
+    if (e) e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
+    setIsMuted(false);
+    video.play()
+      .then(() => setIsPlaying(true))
+      .catch(err => console.log("Play failed", err));
+  };
+
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -52,6 +63,9 @@ export const IntroVideoPlayer = () => {
       video.pause();
       setIsPlaying(false);
     } else {
+      // Unmute when explicitly playing via user click
+      video.muted = false;
+      setIsMuted(false);
       video.play()
         .then(() => setIsPlaying(true))
         .catch(err => console.log("Play failed", err));
@@ -155,6 +169,21 @@ export const IntroVideoPlayer = () => {
           console.error("Video player error:", e.target?.error);
         }}
       />
+
+      {/* Center Unmute Overlay (shows only if video is muted to invite user audio activation gesture) */}
+      {isMuted && (
+        <div 
+          onClick={handleStartWithAudio}
+          className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[1px] transition-all duration-300 z-10 hover:bg-black/35 rounded-xl"
+        >
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-indigo-650 text-white flex items-center justify-center shadow-lg border border-indigo-400/40 animate-pulse hover:scale-110 transition-transform">
+            <Volume2 className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+          </div>
+          <span className="text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest mt-4 bg-slate-950/80 px-4 py-2 rounded-full border border-slate-800 select-none shadow-md">
+            Click to Unmute & Listen
+          </span>
+        </div>
+      )}
 
       {/* 2. HUD Corner Brackets (floating 25px in Z-space) */}
       {/* Top Left */}
